@@ -36,13 +36,20 @@ def get_perimeter(x, y, r):
     arctan = np.arctan2(diff_x, -diff_y)
     d_arr = np.zeros((n_bar, num_steps))
 
+    d_mask = np.full((n_bar,num_steps), False)
+    arctan_diff = np.abs(np.diff(arctan, axis = 0)) > np.pi
+    d_mask[1:-1,:] = arctan_diff
+
+
     # d of worm endpoints is based off of two points, whereas d of non-endpoints is based off of 3 (x, y) points
+    
     d_arr[:-1, :] = arctan
     d_arr[1:, :] = d_arr[1:, :] + arctan
     d_arr[1:-1, :] = d_arr[1:-1, :] / 2
-
+    d_arr = d_arr - np.pi*d_mask
     dx = np.cos(d_arr)*r_i
     dy = np.sin(d_arr)*r_i
+    
 
     px = np.zeros((2*n_bar, x.shape[1]))
     py = np.zeros((2*n_bar, x.shape[1]))
@@ -59,8 +66,8 @@ def get_perimeter(x, y, r):
 def main():
 
     # Default behavior is to use (px, py) if it exists, and if it doesn’t then automatically generate the perimeter from the midline. 
-    parser = argparse.ArgumentParser(description="Process some arguments.")
-    parser.add_argument('-f', '--wcon_file', type=validate_file, help='WCON file path')
+    parser = argparse.ArgumentParser(description="Open a player for the worm behaviour.")
+    parser.add_argument('-f', '--wcon_file', type=validate_file, help='WCON file path', required=True )
     parser.add_argument('-nogui', action='store_true', help="Just load file, don't show GUI")
     parser.add_argument('-s', '--suppress_automatic_generation', action='store_true', help='Suppress the automatic generation of a perimeter which would be computed from the midline of the worm. If (px, py) is not specified in the WCON, a perimeter will not be shown.')
     parser.add_argument('-i', '--ignore_wcon_perimeter', action='store_true', help='Ignore (px, py) values in the WCON. Instead, a perimeter is automatically generated based on the midline of the worm.')
@@ -87,12 +94,26 @@ def main():
         print("No objects found")
 
         # Set the limits of the plot since we don't have any objects to help with autoscaling
-        ax.set_xlim([-1.5, 1.5])
+        
         ax.set_ylim([-1.5, 1.5])
 
     t = np.array(wcon["data"][0]["t"])
     x = np.array(wcon["data"][0]["x"]).T
     y = np.array(wcon["data"][0]["y"]).T
+
+    print(f"Range of time: {t[0]}->{t[0]}; x range: {x.max()}->{x.min()}; y range: {y.max()}->{y.min()}")
+    factor = 0.05
+    if abs(x.max()-x.min())>abs(y.max()-y.min()):
+        side = abs(x.max()-x.min())
+        ax.set_xlim([x.min()-side*factor, x.max()+side*factor])
+        mid = (y.max()+y.min())/2
+        ax.set_ylim([mid-side*(.5+factor), mid+side*(.5+factor)])
+    else:
+        side = abs(y.max()-y.min())
+        ax.set_ylim([y.min()-side*factor, y.max()+side*factor])
+        mid = (x.max()+x.min())/2
+        ax.set_xlim([mid-side*(.5+factor), mid+side*(.5+factor)])
+
 
     num_steps = t.size
 

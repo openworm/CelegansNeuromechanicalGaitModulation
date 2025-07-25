@@ -18,9 +18,9 @@ def validate_file(file_path):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Process some arguments.")
-    parser.add_argument('-f', '--wcon_file', type=validate_file, help='WCON file path')
-    parser.add_argument('-nogui', action='store_true', help="Just load file and generate png, don't show GUI")
+    parser = argparse.ArgumentParser(description="Loads a WCON file and plots/saves an image of the path of the worm and body curvature")
+    parser.add_argument('-f', '--wcon_file', type=validate_file, help='WCON file path', required=True)
+    parser.add_argument('-nogui', action='store_true', help="If specified, only load file and generate the png, don't show GUI")
 
     args = parser.parse_args()
 

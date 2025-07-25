@@ -15,8 +15,9 @@ time ./program
 
 python WormViewCSV.py -nogui # Test reloading csv 
 
-python generate_wcon.py 
-python WormView.py -f simdata.wcon -nogui # Test reloading wcon in Player
+python generate_wcon.py # Regenerate the WCON
 
-python WormPlot.py -f simdata.wcon -nogui # Test reloading wcon & generating png  
+python WormView.py -f simdata.wcon -nogui # Test reloading WCON in Player
+
+python WormPlot.py -f simdata.wcon -nogui # Test reloading WCON & generating png  
 

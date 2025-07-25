@@ -6,7 +6,11 @@ import math
 import os
 import sys 
 
-data = genfromtxt("simdata.csv", delimiter=",").T
+csv_file = "simdata.csv"
+
+print("Loading the CSV file: %s"%csv_file)
+
+data = genfromtxt(csv_file, delimiter=",").T
 
 print("Loaded data: %s" % (str(data.shape)))
 
