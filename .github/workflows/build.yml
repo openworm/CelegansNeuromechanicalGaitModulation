@@ -42,15 +42,15 @@ jobs:
     - name: Install Python dependencies
       run: |
 
-        pip install numpy matplotlib  
+        pip install numpy matplotlib jsonschema
 
     - name: Build and run model
       run: |
         cd WormSim/Model
         ./test_all.sh
+        ls -alth
         
-        
-        
+      
     - name: Print some output of the executed model
       run: |
         cd WormSim/Model
